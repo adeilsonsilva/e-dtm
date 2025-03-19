@@ -1,0 +1,40 @@
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.171.0/24
+          gateway: 192.168.171.1
+services:
+  captain:
+    image: elixir:latest
+    command: elixir /home/captain.exs
+    networks:
+      - internal
+    volumes:
+      - ./src:/home
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+  conscript1:
+    image: elixir:latest
+    depends_on:
+      - captain
+    command: elixir /home/conscript.exs
+    networks:
+      - internal
+    volumes:
+      - ./src:/home
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+  conscript2:
+    image: elixir:latest
+    depends_on:
+      - captain
+    command: elixir /home/conscript.exs
+    networks:
+      - internal
+    volumes:
+      - ./src:/home
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
