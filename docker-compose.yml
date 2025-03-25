@@ -9,32 +9,38 @@ networks:
 services:
   captain:
     image: elixir:latest
-    command: elixir /home/captain.exs
+    command: ["bash", "-c", "elixir --sname app@captain --cookie $$ERLANG_COOKIE /home/captain.exs"]
     networks:
       - internal
     volumes:
       - ./src:/home
     stdin_open: true # docker run -i
     tty: true # docker run -t
+    environment:
+      ERLANG_COOKIE: "my_secret"
   conscript1:
     image: elixir:latest
     depends_on:
       - captain
-    command: elixir /home/conscript.exs
+    command: ["bash", "-c", "elixir --sname app@conscript1 --cookie $$ERLANG_COOKIE /home/conscript.exs"]
     networks:
       - internal
     volumes:
       - ./src:/home
     stdin_open: true # docker run -i
     tty: true # docker run -t
+    environment:
+      ERLANG_COOKIE: "my_secret"
   conscript2:
     image: elixir:latest
     depends_on:
       - captain
-    command: elixir /home/conscript.exs
+    command: ["bash", "-c", "elixir --sname app@conscript2 --cookie $$ERLANG_COOKIE /home/conscript.exs"]
     networks:
       - internal
     volumes:
       - ./src:/home
     stdin_open: true # docker run -i
     tty: true # docker run -t
+    environment:
+      ERLANG_COOKIE: "my_secret"
