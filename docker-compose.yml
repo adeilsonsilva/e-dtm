@@ -10,6 +10,7 @@ services:
   captain:
     image: elixir:latest
     user: "${UID}:${GID}"
+    hostname: captain
     working_dir: /home/edtm
     command: _build/dev/rel/server/bin/server start
     networks:
@@ -22,6 +23,7 @@ services:
   conscript1:
     image: elixir:latest
     user: "${UID}:${GID}"
+    hostname: conscript1
     depends_on:
       - captain
     working_dir: /home/edtm
@@ -33,9 +35,12 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
     env_file: ".env"
+    environment:
+      - CAPTAIN_HOSTNAME=captain
   conscript2:
     image: elixir:latest
     user: "${UID}:${GID}"
+    hostname: conscript2
     depends_on:
       - captain
     working_dir: /home/edtm
@@ -47,3 +52,5 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
     env_file: ".env"
+    environment:
+      - CAPTAIN_HOSTNAME=captain

@@ -17,7 +17,12 @@ defmodule Captain do
 
   # Start with an empty list of conscripts by default
   def start_link(conscripts \\ []) do
-    GenServer.start_link(__MODULE__, conscripts, name: {:global, __MODULE__})
+    module_name = {:global, __MODULE__}
+    # GenServer.start_link(__MODULE__, conscripts, name: module_name)
+    case GenServer.whereis(module_name) do
+      nil -> GenServer.start_link(__MODULE__, conscripts, name: module_name)
+      _pid -> :ignore
+    end
   end
 
   def get() do
@@ -40,7 +45,7 @@ defmodule Captain do
   ############################
 
   def init(conscripts) do
-    IO.puts("Hello from #{inspect(Node.self)}.")
+    IO.puts("Starting Captain at #{inspect(Node.self)}.")
     {:ok, conscripts}
   end
 
