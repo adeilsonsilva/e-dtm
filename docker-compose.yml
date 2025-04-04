@@ -9,7 +9,7 @@ networks:
 services:
   captain:
     image: elixir:latest
-    user: "${UID}:${GID}"
+    user: "${UUID}:${UGID}"
     hostname: captain
     working_dir: /home/edtm
     command: _build/dev/rel/server/bin/server start
@@ -22,7 +22,7 @@ services:
     env_file: ".env"
   conscript1:
     image: elixir:latest
-    user: "${UID}:${GID}"
+    user: "${UUID}:${UGID}"
     hostname: conscript1
     depends_on:
       - captain
@@ -39,7 +39,7 @@ services:
       - CAPTAIN_HOSTNAME=captain
   conscript2:
     image: elixir:latest
-    user: "${UID}:${GID}"
+    user: "${UUID}:${UGID}"
     hostname: conscript2
     depends_on:
       - captain
