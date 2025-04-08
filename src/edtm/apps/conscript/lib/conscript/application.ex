@@ -7,9 +7,21 @@ defmodule Conscript.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = [
+      example: [
+        strategy: Cluster.Strategy.Epmd,
+        config: [
+          # timeout: 30_000,
+          hosts: [:"#{System.get_env("RELEASE_NODE")}@captain"]
+        ],
+      ]
+    ]
+
+
     children = [
       # Starts a worker by calling: Conscript.Worker.start_link(arg)
       # {Conscript.Worker, arg}
+      {Cluster.Supervisor, [topologies, [name: Conscript.ClusterSupervisor]]},
       {Conscript, :hello}
     ]
 

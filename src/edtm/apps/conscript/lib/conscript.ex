@@ -15,6 +15,8 @@ defmodule Conscript do
 
   use Agent
 
+  @captain_server {:global, Captain}
+
   def start_link(opts \\ []) do
     Agent.start_link(__MODULE__, opts, name: __MODULE__)
   end
@@ -24,17 +26,17 @@ defmodule Conscript do
     IO.puts("Starting Conscript at #{inspect(Node.self)}.")
 
 
-    # TODO: the connection needs to be done prior to starting the script
-    # currently it spawns a Captain in the same VM and only after the Node.connect
-    # it uses the instance in the remote node
-    captain = "#{System.get_env("RELEASE_NODE")}@#{System.get_env("CAPTAIN_HOSTNAME")}"
-    IO.puts("Connecting to #{captain}.")
-    Node.connect(String.to_atom(captain)) |> IO.inspect(label: "Connected to #{captain}")
-    Process.sleep(5000)
+    # TODo: check why even using libcluster we still need to sleep for the connection to work
+    Process.sleep(1000)
+    pid = GenServer.whereis(@captain_server)
+    pid |> IO.inspect(label: "Captain running @")
 
-    Captain.enlist(Node.self)
+    GenServer.call(@captain_server, {:enlist, Node.self})
+    Process.sleep(1000)
+    # list = Captain.get()
+    GenServer.call(@captain_server, :get) |> IO.inspect(label: "nodes: ")
 
-    Process.sleep(5000)
+  end
 
     list = Captain.get()
     IO.puts("list: #{inspect(list)}")
